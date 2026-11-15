@@ -1,4 +1,4 @@
-# x_val	y_exact	y_interp_unif	y_interp_cheb	err_unif	err_cheb
+     x_val	   y_exact	y_interp_unif	y_interp_cheb	  err_unif	  err_cheb
 -1.000000e+00	5.000000e-01	5.000000e-01	5.000000e-01	0.000000e+00	9.156101e-09
 -9.800000e-01	5.101000e-01	5.100943e-01	5.101000e-01	5.723163e-06	4.431749e-09
 -9.600000e-01	5.203997e-01	5.203948e-01	5.203997e-01	4.902323e-06	8.673907e-09

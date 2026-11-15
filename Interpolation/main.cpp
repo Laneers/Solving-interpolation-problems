@@ -45,6 +45,7 @@ void generateChebyshevGrid(double a, double b, int n, double* x) {
 }
 
 double LagrangeInterpolation(double x_target, const double* x, const double* y, int n) {
+    //Basic form
     double result = 0.0;
     for (int i = 0; i <= n; ++i) {
         double term = y[i];
@@ -55,6 +56,27 @@ double LagrangeInterpolation(double x_target, const double* x, const double* y, 
         }
         result += term;
     }
+
+    //Newton form
+    /*double* diff = new double[n + 1];
+
+    for (int i = 0; i <= n; ++i) {
+        diff[i] = y[i];
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        for (int j = n; j >= i; --j) {
+            diff[j] = (diff[j] - diff[j - 1]) / (x[j] - x[j - i]);
+        }
+    }
+
+    double result = diff[n];
+    for (int i = n - 1; i >= 0; --i) {
+        result = result * (x_target - x[i]) + diff[i];
+    }
+
+    delete[] diff;*/
+
     return result;
 }
 
@@ -73,27 +95,22 @@ void runTestLagrange(int test_num, double a, double b, int n) {
     }
 
     std::string filename = "test" + std::to_string(test_num) + "_n" + std::to_string(n) + "_lagr.txt";
-    std::ofstream outFile(filename);
+    std::ofstream out(filename);
 
-    if (!outFile.is_open()) {
-        std::cerr << "Error: Could not create file " << filename << "\n";
-    }
-    else {
-        outFile << std::scientific << std::setprecision(6);
-        outFile << "# " << "x_val" << "\t"
-            << "y_exact" << "\t"
-            << "y_interp_unif" << "\t"
-            << "y_interp_cheb" << "\t"
-            << "err_unif" << "\t"
-            << "err_cheb" << "\n";
-    }
+    out << std::scientific << std::setprecision(6);
+    out << std::setw(10) << "x_val" << "\t"
+        << std::setw(10) << "y_exact" << "\t"
+        << std::setw(10) << "y_interp_unif" << "\t"
+        << std::setw(10) << "y_interp_cheb" << "\t"
+        << std::setw(10) << "err_unif" << "\t"
+        << std::setw(10) << "err_cheb" << "\n";
 
-    int checkPoints = 100;
+    int n_checks = 100;
     double max_err_unif = 0.0;
     double max_err_cheb = 0.0;
 
-    double h = (b - a) / checkPoints;
-    for (int i = 0; i <= checkPoints; ++i) {
+    double h = (b - a) / n_checks;
+    for (int i = 0; i <= n_checks; ++i) {
         double x_val = a + i * h;
         double y_exact = func(x_val, test_num);
 
@@ -106,19 +123,15 @@ void runTestLagrange(int test_num, double a, double b, int n) {
         if (err_unif > max_err_unif) max_err_unif = err_unif;
         if (err_cheb > max_err_cheb) max_err_cheb = err_cheb;
 
-        if (outFile.is_open()) {
-            outFile << x_val << "\t"
-                << y_exact << "\t"
-                << y_interp_unif << "\t"
-                << y_interp_cheb << "\t"
-                << err_unif << "\t"
-                << err_cheb << "\n";
-        }
+        out << x_val << "\t"
+            << y_exact << "\t"
+            << y_interp_unif << "\t"
+            << y_interp_cheb << "\t"
+            << err_unif << "\t"
+            << err_cheb << "\n";
     }
+    out.close();
 
-    if (outFile.is_open()) {
-        outFile.close();
-    }
 
     std::cout << std::setw(6) << n
         << std::setw(25) << max_err_unif
